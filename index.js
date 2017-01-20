@@ -14,7 +14,7 @@ MongoClient.connect(mongoUrl, (err, db) => {
     logs.insertOne({
       ts: Date.now(),
       ua: req.headers['user-agent'],
-      referer: req.headers['referrer'],
+      referer: req.headers['referer'],
       ip: getIp(req)
     }, (err) => {
       if (err) {
@@ -27,6 +27,6 @@ MongoClient.connect(mongoUrl, (err, db) => {
   app.listen(3000, () => console.log('Server running on port 3000'))
 
   function getIp (req) {
-    return req.headers['x-forwarded-for'] || req.connection.remoteAddress
+    return req.headers['x-real-ip'] || req.connection.remoteAddress
   }
 })
