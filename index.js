@@ -21,7 +21,7 @@ MongoClient.connect(mongoUrl, (err, db) => {
         console.log('Failed to create log')
         throw err
       }
-      res.sendStatus(`console.log('You got tracked')`)
+      res.send(`console.log('You got tracked')`)
     })
   })
   app.listen(3000, () => console.log('Server running on port 3000'))
