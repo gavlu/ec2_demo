@@ -1,8 +1,29 @@
 const express = require('express')
-const app = express()
+const { MongoClient } = require('mongodb')
 
-app.get('/', (req, res) => {
-  res.send('ELLO GOV\'NA')
+const mongoUrl = 'mongodb://localhost:27017/tutorial-app'
+MongoClient.connect(mongoUrl, (err, db) => {
+  if (err) return console.log('Failed to connect to MongoDB', err)
+
+  const app = express()
+  const logs = db.collection('logs')
+
+  app.use(express.static('public'))
+
+  app.get('/log', (req, res) => {
+    logs.insertOne({
+      ts: Date.now(),
+      ua: req.headers['user-agent'],
+      referer: req.headers['referrer'],
+      ip: getIp(req)
+    }, (err) => {
+      if (err) return console.log('Failed to create log', err)
+      res.sendStatus(200)
+    })
+  })
+  app.listen(3000, () => console.log('Server running on port 3000'))
+
+  function getIp (req) {
+    return req.headers['x-forwarded-for'] || req.connection.remoteAddress
+  }
 })
-
-app.listen(3000)
