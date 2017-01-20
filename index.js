@@ -10,15 +10,18 @@ MongoClient.connect(mongoUrl, (err, db) => {
 
   app.use(express.static('public'))
 
-  app.get('/log', (req, res) => {
+  app.get('/log.js', (req, res) => {
     logs.insertOne({
       ts: Date.now(),
       ua: req.headers['user-agent'],
       referer: req.headers['referrer'],
       ip: getIp(req)
     }, (err) => {
-      if (err) return console.log('Failed to create log', err)
-      res.sendStatus(200)
+      if (err) {
+        console.log('Failed to create log')
+        throw err
+      }
+      res.sendStatus(`console.log('You got tracked')`)
     })
   })
   app.listen(3000, () => console.log('Server running on port 3000'))
